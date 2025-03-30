@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interval Timer</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        background-color: #f5f5f5;
+        color: #333;
+        max-width: 500px;
+        width: 100%;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        margin: 0 auto;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #2c3e50;
+      }
+
+      .input-container {
+        background-color: white;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .input-group {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #555;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      /* Ensure time inputs match other inputs across all devices */
+      input[type="time"] {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+        background-color: white;
+      }
+
+      .timer-container {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .timer-display {
+        font-size: 3rem;
+        font-weight: bold;
+        margin: 20px 0;
+        color: #2c3e50;
+      }
+
+      .status {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        font-weight: bold;
+        color: #555;
+      }
+
+      .interval-info {
+        font-size: 1.1rem;
+        margin: 15px 0;
+        color: #555;
+      }
+
+      .set-info {
+        font-size: 1rem;
+        margin-top: 5px;
+        color: #7f8c8d;
+      }
+
+      .total-time {
+        font-size: 0.9rem;
+        margin-top: 10px;
+        color: #7f8c8d;
+        font-family: monospace;
+      }
+
+      .buttons-container {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      button {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background-color 0.3s;
+      }
+
+      .play-pause {
+        background-color: #2ecc71;
+        color: white;
+      }
+
+      .play-pause.paused {
+        background-color: #3498db;
+      }
+
+      .reset {
+        background-color: #e74c3c;
+        color: white;
+      }
+
+      .back {
+        background-color: #95a5a6;
+        color: white;
+      }
+
+      .start {
+        background-color: #2ecc71;
+        color: white;
+        width: 100%;
+        margin-top: 10px;
+        font-size: 18px;
+        padding: 15px;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      /* Presets styles */
+      .presets-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        gap: 10px;
+      }
+
+      .preset-buttons {
+        display: flex;
+        gap: 5px;
+        flex: 1;
+        justify-content: space-between;
+        max-width: 300px;
+      }
+
+      .preset-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 6px;
+        background-color: #95a5a6;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      .preset-btn.active {
+        background-color: #3498db;
+      }
+
+      .preset-btn.selected {
+        background-color: #777777;
+        transform: scale(1.05);
+      }
+
+      .preset-btn.selected.active {
+        background-color: #2980b9;
+      }
+
+      .edit-btn {
+        background-color: #f39c12;
+        padding: 5px 15px;
+      }
+
+      .edit-mode .preset-btn {
+        background-color: #e74c3c;
+      }
+
+      .edit-mode .edit-btn {
+        background-color: #27ae60;
+      }
+
+      .hidden-element {
+        display: none;
+      }
+
+      /* Row layout for side-by-side inputs */
+      .input-row {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+      }
+
+      .input-row .input-group {
+        flex: 1;
+        margin-bottom: 0;
+      }
+
+      /* Speed slider styling */
+      .speed-slider-container {
+        margin-top: 20px;
+        margin-bottom: 10px;
+      }
+
+      .speed-slider-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+      }
+
+      .speed-value {
+        font-weight: bold;
+        color: #3498db;
+      }
+
+      .speed-marks {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2px;
+        color: #7f8c8d;
+        font-size: 12px;
+      }
+
+      /* Hide presets when timer is shown */
+      body:has(.timer-container:not(.hidden)) .presets-container {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Interval Timer</h1>
+
+    <div class="input-container" id="setup-screen">
+      <div class="input-row">
+        <div class="input-group">
+          <label for="sets">Number of Sets:</label>
+          <input type="number" id="sets" min="0" value="1" />
+        </div>
+
+        <div class="input-group">
+          <label for="set-rest-time">Time Between Sets:</label>
+          <input type="time" id="set-rest-time" value="00:00" required />
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="intervals">Number of Intervals:</label>
+        <input type="number" id="intervals" min="1" value="4" />
+      </div>
+
+      <div class="input-group">
+        <label for="interval-time">Interval Duration:</label>
+        <input type="time" id="interval-time" value="00:15" required />
+      </div>
+
+      <div class="input-group">
+        <label for="rest-time">Rest Duration:</label>
+        <input type="time" id="rest-time" value="00:05" required />
+      </div>
+
+      <button class="start" id="start-button">Start Timer</button>
+    </div>
+
+    <div class="timer-container hidden" id="timer-screen">
+      <div class="status" id="status">Interval 1 of 4</div>
+      <div class="timer-display" id="timer">15</div>
+      <div class="interval-info" id="interval-type">WORK</div>
+      <div class="set-info" id="set-info">Set 1 of 3</div>
+      <div class="total-time" id="total-time">00:00</div>
+
+      <div class="speed-slider-container">
+        <div class="speed-slider-label">
+          <label for="speed-slider">
+            Speed: <span id="speed-value" class="speed-value">1.0x</span>
+          </label>
+        </div>
+        <input
+          id="speed-slider"
+          type="range"
+          min="50"
+          max="200"
+          value="100"
+          step="25"
+          class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+        />
+        <div class="speed-marks">
+          <span>0.5x</span>
+          <span>1.0x</span>
+          <span>1.5x</span>
+          <span>2.0x</span>
+        </div>
+      </div>
+
+      <div class="buttons-container">
+        <button class="play-pause" id="play-pause">Pause</button>
+        <button class="reset" id="reset">Reset</button>
+        <button class="back" id="back-button">Back</button>
+      </div>
+    </div>
+
+    <!-- Presets Container -->
+    <div class="presets-container" id="presets-container">
+      <div class="preset-buttons" id="preset-buttons">
+        <button class="preset-btn" data-preset="1">1</button>
+        <button class="preset-btn" data-preset="2">2</button>
+        <button class="preset-btn" data-preset="3">3</button>
+        <button class="preset-btn" data-preset="4">4</button>
+        <button class="preset-btn" data-preset="5">5</button>
+      </div>
+      <button class="edit-btn" id="edit-btn">Edit</button>
+    </div>
+
+    <script>
+      // DOM Elements - Cache frequently used elements
+      const elements = {
+        setupScreen: document.getElementById("setup-screen"),
+        timerScreen: document.getElementById("timer-screen"),
+        startButton: document.getElementById("start-button"),
+        playPauseButton: document.getElementById("play-pause"),
+        resetButton: document.getElementById("reset"),
+        backButton: document.getElementById("back-button"),
+        timerDisplay: document.getElementById("timer"),
+        statusDisplay: document.getElementById("status"),
+        intervalTypeDisplay: document.getElementById("interval-type"),
+        setInfoDisplay: document.getElementById("set-info"),
+        totalTimeDisplay: document.getElementById("total-time"),
+        presetsContainer: document.getElementById("presets-container"),
+        presetButtons: document.querySelectorAll(".preset-btn"),
+        editButton: document.getElementById("edit-btn"),
+        inputs: {
+          sets: document.getElementById("sets"),
+          setRestTime: document.getElementById("set-rest-time"),
+          intervals: document.getElementById("intervals"),
+          intervalTime: document.getElementById("interval-time"),
+          restTime: document.getElementById("rest-time"),
+          speedSlider: document.getElementById("speed-slider"),
+          speedValue: document.getElementById("speed-value"),
+        },
+      };
+
+      // Speech synthesis
+      const synth = window.speechSynthesis;
+
+      // Timer state
+      const timer = {
+        intervals: 0,
+        intervalTime: 0,
+        restTime: 0,
+        currentInterval: 1,
+        isResting: false,
+        timeRemaining: 0,
+        originalTime: 0,
+        isRunning: false,
+        timerId: null,
+        lastCountdownTime: null,
+        sets: 1,
+        setRestTime: 30,
+        currentSet: 1,
+        isBetweenSets: false,
+        waitForUserBetweenSets: false,
+        totalElapsedTime: 0,
+        totalElapsedTimer: null,
+        totalStartTime: 0,
+        wakeLock: null,
+        speed: 1.0,
+      };
+
+      // Preset state
+      let editMode = false;
+      let currentlySelectedPreset = null;
+
+      // Utility Functions
+      function speak(text) {
+        synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+        synth.speak(utterance);
+      }
+
+      function formatSecondsToTime(totalSeconds) {
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
+          2,
+          "0"
+        )}`;
+      }
+
+      function getTimeInSeconds(timeValue) {
+        if (!timeValue) return 0;
+        const [minutes, seconds] = timeValue.split(":").map(Number);
+        return minutes * 60 + seconds;
+      }
+
+      // Wake Lock Functions
+      async function acquireWakeLock() {
+        if ("wakeLock" in navigator) {
+          try {
+            timer.wakeLock = await navigator.wakeLock.request("screen");
+            console.log("Wake lock acquired");
+
+            timer.wakeLock.addEventListener("release", () => {
+              console.log("Wake lock released");
+              if (timer.isRunning) {
+                acquireWakeLock();
+              }
+            });
+          } catch (err) {
+            console.log("Wake lock request failed: ", err.message);
+          }
+        }
+      }
+
+      async function releaseWakeLock() {
+        if (timer.wakeLock) {
+          try {
+            await timer.wakeLock.release();
+            timer.wakeLock = null;
+            console.log("Wake lock released");
+          } catch (err) {
+            console.log("Error releasing wake lock: ", err.message);
+          }
+        }
+      }
+
+      // Preset Functions
+      function clearSelectedPreset() {
+        if (currentlySelectedPreset !== null) {
+          document
+            .querySelector(
+              `.preset-btn[data-preset="${currentlySelectedPreset}"]`
+            )
+            ?.classList.remove("selected");
+          currentlySelectedPreset = null;
+        }
+      }
+
+      function loadPresets() {
+        for (let i = 1; i <= 5; i++) {
+          const preset = localStorage.getItem(`preset_${i}`);
+          const presetBtn = document.querySelector(
+            `.preset-btn[data-preset="${i}"]`
+          );
+
+          if (preset) {
+            presetBtn.classList.add("active");
+          } else {
+            presetBtn.classList.remove("active");
+          }
+        }
+      }
+
+      function toggleEditMode() {
+        editMode = !editMode;
+        elements.presetsContainer.classList.toggle("edit-mode", editMode);
+        elements.editButton.textContent = editMode ? "Done" : "Edit";
+      }
+
+      function handlePresetClick(e) {
+        const presetNumber = e.target.dataset.preset;
+
+        if (editMode) {
+          savePreset(presetNumber);
+        } else {
+          loadPreset(presetNumber);
+        }
+      }
+
+      function savePreset(presetNumber) {
+        const presetData = {
+          sets: elements.inputs.sets.value,
+          setRestTime: elements.inputs.setRestTime.value,
+          intervals: elements.inputs.intervals.value,
+          intervalTime: elements.inputs.intervalTime.value,
+          restTime: elements.inputs.restTime.value,
+        };
+
+        localStorage.setItem(
+          `preset_${presetNumber}`,
+          JSON.stringify(presetData)
+        );
+        const presetBtn = document.querySelector(
+          `.preset-btn[data-preset="${presetNumber}"]`
+        );
+        presetBtn.classList.add("active");
+
+        if (currentlySelectedPreset !== null) {
+          document
+            .querySelector(
+              `.preset-btn[data-preset="${currentlySelectedPreset}"]`
+            )
+            ?.classList.remove("selected");
+        }
+
+        currentlySelectedPreset = presetNumber;
+        presetBtn.classList.add("selected");
+
+        // Flash effect for visual feedback
+        presetBtn.style.transform = "scale(1.2)";
+        presetBtn.style.transition = "transform 0.2s";
+
+        setTimeout(() => {
+          presetBtn.style.transform = "scale(1)";
+          if (currentlySelectedPreset === presetNumber) {
+            presetBtn.classList.add("selected");
+          }
+        }, 200);
+      }
+
+      function loadPreset(presetNumber) {
+        const presetData = localStorage.getItem(`preset_${presetNumber}`);
+
+        if (presetData) {
+          const preset = JSON.parse(presetData);
+          elements.inputs.sets.value = preset.sets || 1;
+          elements.inputs.setRestTime.value = preset.setRestTime || "00:00";
+          elements.inputs.intervals.value = preset.intervals;
+          elements.inputs.intervalTime.value = preset.intervalTime;
+          elements.inputs.restTime.value = preset.restTime;
+
+          const speedValue = 100;
+          elements.inputs.speedSlider.value = speedValue;
+          timer.speed = parseFloat(speedValue) / 100;
+          elements.inputs.speedValue.textContent =
+            (parseFloat(speedValue) / 100).toFixed(1) + "x";
+
+          // Update the selected preset visual indicator
+          if (currentlySelectedPreset !== null) {
+            document
+              .querySelector(
+                `.preset-btn[data-preset="${currentlySelectedPreset}"]`
+              )
+              ?.classList.remove("selected");
+          }
+
+          currentlySelectedPreset = presetNumber;
+          document
+            .querySelector(`.preset-btn[data-preset="${presetNumber}"]`)
+            .classList.add("selected");
+        }
+      }
+
+      // Timer Functions
+      function startTimer() {
+        // Get values from input fields
+        timer.sets = parseInt(elements.inputs.sets.value) || 1;
+        timer.intervals = parseInt(elements.inputs.intervals.value) || 1;
+
+        // Get interval time from time input
+        timer.intervalTime = getTimeInSeconds(
+          elements.inputs.intervalTime.value
+        );
+
+        // Get set rest time
+        timer.waitForUserBetweenSets =
+          elements.inputs.setRestTime.value === "00:00";
+        timer.setRestTime = timer.waitForUserBetweenSets
+          ? 0
+          : getTimeInSeconds(elements.inputs.setRestTime.value);
+
+        // Get rest time
+        timer.restTime = getTimeInSeconds(elements.inputs.restTime.value);
+
+        // Get speed value
+        timer.speed = parseFloat(elements.inputs.speedSlider.value) / 100;
+
+        // Reset timer state
+        timer.currentSet = 1;
+        timer.currentInterval = 1;
+        timer.isResting = false;
+        timer.isBetweenSets = false;
+        timer.timeRemaining = timer.intervalTime;
+        timer.originalTime = timer.intervalTime;
+        timer.isRunning = true;
+        timer.lastCountdownTime = null;
+        timer.totalElapsedTime = 0;
+        timer.totalStartTime = Date.now();
+
+        // Acquire wake lock
+        acquireWakeLock();
+
+        // Update UI
+        updateDisplay();
+        elements.setupScreen.classList.add("hidden");
+        elements.timerScreen.classList.remove("hidden");
+        elements.presetsContainer.classList.add("hidden");
+
+        // Hide set info if sets = 0
+        elements.setInfoDisplay.classList.toggle(
+          "hidden-element",
+          timer.sets <= 0
+        );
+
+        // Announce start
+        speak("Interval 1 begin");
+
+        // Start timers
+        startCountdown();
+        startTotalTimeTracking();
+      }
+
+      function handleIntervalComplete() {
+        if (timer.isResting) {
+          // Rest period completed, move to next interval
+          timer.currentInterval++;
+          timer.isResting = false;
+
+          if (timer.currentInterval > timer.intervals) {
+            // All intervals in this set completed
+            handleSetComplete();
+            return;
+          }
+
+          timer.timeRemaining = timer.intervalTime;
+          timer.originalTime = timer.intervalTime;
+          speak(`Interval ${timer.currentInterval} begin`);
+        } else {
+          // Work interval completed
+          if (timer.restTime > 0) {
+            // Move to rest period if rest time > 0
+            timer.isResting = true;
+            timer.timeRemaining = timer.restTime;
+            timer.originalTime = timer.restTime;
+            speak("Rest");
+          } else {
+            // Skip rest period if rest time is 0
+            timer.currentInterval++;
+
+            if (timer.currentInterval > timer.intervals) {
+              // All intervals in this set completed
+              handleSetComplete();
+              return;
+            }
+
+            // Set up next interval immediately
+            timer.timeRemaining = timer.intervalTime;
+            timer.originalTime = timer.intervalTime;
+            speak(`Interval ${timer.currentInterval} begin`);
+          }
+        }
+
+        timer.lastCountdownTime = null;
+        updateDisplay();
+        if (timer.isRunning) {
+          startCountdown();
+        }
+      }
+
+      function handleSetComplete() {
+        // If sets = 0 or 1, or we've completed all sets, finish the workout
+        if (timer.sets <= 1 || timer.currentSet >= timer.sets) {
+          completeWorkout();
+          return;
+        }
+
+        // Move to next set
+        timer.currentSet++;
+        timer.currentInterval = 1;
+        timer.isResting = false;
+
+        if (timer.waitForUserBetweenSets) {
+          // Pause for user to resume manually
+          timer.isBetweenSets = true;
+          timer.isRunning = false;
+          elements.playPauseButton.textContent = "Start Next Set";
+          elements.playPauseButton.classList.add("paused");
+          speak("Set complete. Press Start when ready for next set.");
+          updateDisplay();
+        } else {
+          // Start the rest period between sets
+          timer.isBetweenSets = true;
+          timer.timeRemaining = timer.setRestTime;
+          timer.originalTime = timer.setRestTime;
+          speak(
+            `Set complete. Rest for ${formatSecondsToTime(
+              timer.setRestTime
+            )} before next set.`
+          );
+          updateDisplay();
+
+          if (timer.isRunning) {
+            startCountdown();
+          }
+        }
+      }
+
+      function togglePlayPause() {
+        if (timer.isRunning) {
+          // Pause the timer
+          clearInterval(timer.timerId);
+          clearInterval(timer.totalElapsedTimer);
+          timer.isRunning = false;
+          elements.playPauseButton.textContent = timer.isBetweenSets
+            ? "Start Next Set"
+            : "Play";
+          elements.playPauseButton.classList.add("paused");
+          releaseWakeLock();
+        } else {
+          // Resume the timer or start next set
+          timer.isRunning = true;
+          timer.totalStartTime = Date.now() - timer.totalElapsedTime * 1000;
+
+          if (timer.isBetweenSets && timer.waitForUserBetweenSets) {
+            // Start the next set after manual pause
+            timer.isBetweenSets = false;
+            timer.timeRemaining = timer.intervalTime;
+            timer.originalTime = timer.intervalTime;
+            speak(`Set ${timer.currentSet} begin. Interval 1`);
+          }
+
+          acquireWakeLock();
+          elements.playPauseButton.textContent = "Pause";
+          elements.playPauseButton.classList.remove("paused");
+          startCountdown();
+          startTotalTimeTracking();
+        }
+      }
+
+      function startCountdown() {
+        clearInterval(timer.timerId);
+
+        const startTime = Date.now();
+        const initialTimeRemaining = timer.timeRemaining;
+
+        timer.timerId = setInterval(() => {
+          // Apply speed multiplier to elapsed time calculation
+          const elapsedTime = Math.floor(
+            ((Date.now() - startTime) / 1000) * timer.speed
+          );
+          timer.timeRemaining = Math.max(0, initialTimeRemaining - elapsedTime);
+
+          // Voice countdown logic
+          const originalDuration = timer.isBetweenSets
+            ? timer.setRestTime
+            : timer.isResting
+            ? timer.restTime
+            : timer.intervalTime;
+
+          if (
+            timer.timeRemaining <= 3 &&
+            timer.timeRemaining > 0 &&
+            originalDuration > 3
+          ) {
+            // Only speak if we haven't already spoken this number
+            if (timer.lastCountdownTime !== timer.timeRemaining) {
+              speak(timer.timeRemaining.toString());
+              timer.lastCountdownTime = timer.timeRemaining;
+            }
+          }
+
+          updateDisplay();
+
+          if (timer.timeRemaining === 0) {
+            clearInterval(timer.timerId);
+
+            if (timer.isBetweenSets) {
+              // Between-sets rest is complete, start the next set
+              timer.isBetweenSets = false;
+              timer.timeRemaining = timer.intervalTime;
+              timer.originalTime = timer.intervalTime;
+              speak(`Set ${timer.currentSet} begin. Interval 1`);
+              updateDisplay();
+              if (timer.isRunning) {
+                startCountdown();
+              }
+            } else {
+              handleIntervalComplete();
+            }
+          }
+        }, 100);
+      }
+
+      function resetCurrentInterval() {
+        clearInterval(timer.timerId);
+        clearInterval(timer.totalElapsedTimer);
+
+        // Reset to beginning of workout
+        timer.currentSet = 1;
+        timer.currentInterval = 1;
+        timer.isResting = false;
+        timer.isBetweenSets = false;
+
+        // Reset time
+        timer.timeRemaining = timer.intervalTime;
+        timer.originalTime = timer.timeRemaining;
+        timer.lastCountdownTime = null;
+
+        // Reset total elapsed time
+        timer.totalElapsedTime = 0;
+        timer.totalStartTime = Date.now();
+
+        // Release and reacquire wake lock if still running
+        if (timer.isRunning) {
+          releaseWakeLock();
+          acquireWakeLock();
+        }
+
+        updateDisplay();
+        updateTotalTimeDisplay();
+
+        if (timer.isRunning) {
+          startCountdown();
+          startTotalTimeTracking();
+        }
+      }
+
+      function updateDisplay() {
+        // Update timer display
+        if (timer.isBetweenSets) {
+          // Show time in mm:ss format for rest between sets
+          elements.timerDisplay.textContent = formatSecondsToTime(
+            timer.timeRemaining
+          );
+        } else {
+          // Keep regular seconds display for intervals
+          elements.timerDisplay.textContent = timer.timeRemaining;
+        }
+
+        // Update status text based on current state
+        if (timer.isBetweenSets) {
+          elements.statusDisplay.textContent = `Rest between sets`;
+          elements.intervalTypeDisplay.textContent = "REST";
+          elements.intervalTypeDisplay.style.color = "#3498db";
+        } else {
+          elements.statusDisplay.textContent = `Interval ${timer.currentInterval} of ${timer.intervals}`;
+          elements.intervalTypeDisplay.textContent = timer.isResting
+            ? "REST"
+            : "WORK";
+          elements.intervalTypeDisplay.style.color = timer.isResting
+            ? "#3498db"
+            : "#e74c3c";
+        }
+
+        // Update set info (hide if sets = 0)
+        if (timer.sets > 0) {
+          elements.setInfoDisplay.textContent = `Set ${timer.currentSet} of ${timer.sets}`;
+          elements.setInfoDisplay.classList.remove("hidden-element");
+        } else {
+          elements.setInfoDisplay.classList.add("hidden-element");
+        }
+      }
+
+      function completeWorkout() {
+        speak("Set completed");
+        clearInterval(timer.totalElapsedTimer);
+        elements.setupScreen.classList.remove("hidden");
+        elements.timerScreen.classList.add("hidden");
+        elements.presetsContainer.classList.remove("hidden");
+        timer.isRunning = false;
+        releaseWakeLock();
+      }
+
+      function backToSettings() {
+        clearInterval(timer.timerId);
+        clearInterval(timer.totalElapsedTimer);
+        timer.isRunning = false;
+        releaseWakeLock();
+
+        elements.timerScreen.classList.add("hidden");
+        elements.setupScreen.classList.remove("hidden");
+        elements.presetsContainer.classList.remove("hidden");
+        synth.cancel();
+      }
+
+      function startTotalTimeTracking() {
+        clearInterval(timer.totalElapsedTimer);
+        timer.totalElapsedTimer = setInterval(() => {
+          if (timer.isRunning) {
+            timer.totalElapsedTime = Math.floor(
+              (Date.now() - timer.totalStartTime) / 1000
+            );
+            updateTotalTimeDisplay();
+          }
+        }, 1000);
+      }
+
+      function updateTotalTimeDisplay() {
+        elements.totalTimeDisplay.textContent = formatSecondsToTime(
+          timer.totalElapsedTime
+        );
+      }
+
+      // Event Listeners
+      elements.startButton.addEventListener("click", startTimer);
+      elements.playPauseButton.addEventListener("click", togglePlayPause);
+      elements.resetButton.addEventListener("click", resetCurrentInterval);
+      elements.backButton.addEventListener("click", backToSettings);
+      elements.editButton.addEventListener("click", toggleEditMode);
+
+      elements.presetButtons.forEach((btn) => {
+        btn.addEventListener("click", handlePresetClick);
+      });
+
+      // Add listeners to inputs to clear selected preset on manual changes
+      elements.inputs.sets.addEventListener("input", clearSelectedPreset);
+      elements.inputs.setRestTime.addEventListener(
+        "input",
+        clearSelectedPreset
+      );
+      elements.inputs.intervals.addEventListener("input", clearSelectedPreset);
+      elements.inputs.intervalTime.addEventListener(
+        "input",
+        clearSelectedPreset
+      );
+      elements.inputs.restTime.addEventListener("input", clearSelectedPreset);
+      elements.inputs.speedSlider.addEventListener("input", function () {
+        const speed = parseFloat(this.value) / 100;
+        timer.speed = speed;
+        elements.inputs.speedValue.textContent = speed.toFixed(1) + "x";
+        clearSelectedPreset();
+      });
+
+      // Initialize
+      loadPresets();
+
+      // Load preset 1 by default if it exists
+      (function loadDefaultPreset() {
+        const preset1 = localStorage.getItem("preset_1");
+        if (preset1) {
+          loadPreset("1");
+        }
+      })();
+    </script>
+  </body>
+</html>
