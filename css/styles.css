@@ -5,9 +5,41 @@
   font-family: Arial, sans-serif;
 }
 
+/* Base colors for light mode */
+:root {
+  --bg-color: #f5f5f5;
+  --text-color: #333;
+  --container-bg: white;
+  --heading-color: #2c3e50;
+  --label-color: #555;
+  --border-color: #ddd;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --input-bg: white;
+  --timer-color: #2c3e50;
+  --status-color: #555;
+  --interval-color: #555;
+  --set-info-color: #7f8c8d;
+}
+
+/* Dark mode colors */
+.dark {
+  --bg-color: #1a1a1a;
+  --text-color: #f5f5f5;
+  --container-bg: #2c2c2c;
+  --heading-color: #6ab0de;
+  --label-color: #cccccc;
+  --border-color: #444;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --input-bg: #3a3a3a;
+  --timer-color: #6ab0de;
+  --status-color: #cccccc;
+  --interval-color: #cccccc;
+  --set-info-color: #96a6ad;
+}
+
 body {
-  background-color: #f5f5f5;
-  color: #333;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   max-width: 500px;
   width: 100%;
   padding: 20px;
@@ -17,18 +49,28 @@ body {
   margin: 0 auto;
 }
 
+/* Header layout */
+.header-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+  position: relative;
+}
+
 h1 {
   text-align: center;
-  margin-bottom: 20px;
-  color: #2c3e50;
+  margin-bottom: 0;
+  color: var(--heading-color);
 }
 
 .input-container {
-  background-color: white;
+  background-color: var(--container-bg);
   border-radius: 10px;
   padding: 15px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px var(--shadow-color);
 }
 
 .input-group {
@@ -39,15 +81,17 @@ label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
-  color: #555;
+  color: var(--label-color);
 }
 
 input {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 5px;
   font-size: 16px;
+  background-color: var(--input-bg);
+  color: var(--text-color);
 }
 
 /* Ensure time inputs match other inputs across all devices */
@@ -57,51 +101,52 @@ input[type="time"] {
   -moz-appearance: none;
   width: 100%;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 5px;
   font-size: 16px;
-  background-color: white;
+  background-color: var(--input-bg);
+  color: var(--text-color);
 }
 
 .timer-container {
-  background-color: white;
+  background-color: var(--container-bg);
   border-radius: 10px;
   padding: 20px;
   text-align: center;
   margin-bottom: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px var(--shadow-color);
 }
 
 .timer-display {
   font-size: 3rem;
   font-weight: bold;
   margin: 20px 0;
-  color: #2c3e50;
+  color: var(--timer-color);
 }
 
 .status {
   font-size: 1.2rem;
   margin-bottom: 10px;
   font-weight: bold;
-  color: #555;
+  color: var(--status-color);
 }
 
 .interval-info {
   font-size: 1.1rem;
   margin: 15px 0;
-  color: #555;
+  color: var(--interval-color);
 }
 
 .set-info {
   font-size: 1rem;
   margin-top: 5px;
-  color: #7f8c8d;
+  color: var(--set-info-color);
 }
 
 .total-time {
   font-size: 0.9rem;
   margin-top: 10px;
-  color: #7f8c8d;
+  color: var(--set-info-color);
   font-family: monospace;
 }
 
@@ -252,4 +297,26 @@ button {
 /* Hide presets when timer is shown */
 body:has(.timer-container:not(.hidden)) .presets-container {
   display: none !important;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  color: var(--label-color);
 }

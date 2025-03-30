@@ -5,6 +5,7 @@
 import { getElements } from "./ui.js";
 import { initTimer } from "./timer.js";
 import { initPresets } from "./presets.js";
+import { initThemeToggle } from "./theme.js";
 
 /**
  * Initialize the application
@@ -18,6 +19,9 @@ function initApp() {
 
   // Initialize preset functionality
   initPresets(elements);
+
+  // Initialize theme toggle functionality
+  initThemeToggle();
 }
 
 // Initialize the app when DOM is fully loaded
