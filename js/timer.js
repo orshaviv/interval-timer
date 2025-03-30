@@ -51,6 +51,22 @@ export function initTimer(elements) {
     resetCurrentInterval(elements)
   );
   elements.backButton.addEventListener("click", () => backToSettings(elements));
+
+  // Add event listener for speed slider to update in real-time
+  elements.inputs.speedSlider.addEventListener("input", () => {
+    if (timer.isRunning) {
+      // Update the speed value
+      timer.speed = parseFloat(elements.inputs.speedSlider.value) / 100;
+
+      // Restart the countdown with new speed
+      startCountdown(elements);
+    } else {
+      timer.speed = parseFloat(elements.inputs.speedSlider.value) / 100;
+    }
+
+    // Update speed display
+    elements.inputs.speedValue.textContent = timer.speed.toFixed(1) + "x";
+  });
 }
 
 /**

@@ -6,6 +6,7 @@ import { getElements } from "./ui.js";
 import { initTimer } from "./timer.js";
 import { initPresets } from "./presets.js";
 import { initThemeToggle } from "./theme.js";
+import { initInputNumber } from "./input-number.js";
 
 /**
  * Initialize the application
@@ -22,6 +23,9 @@ function initApp() {
 
   // Initialize theme toggle functionality
   initThemeToggle();
+
+  // Initialize input number components
+  initInputNumber();
 }
 
 // Initialize the app when DOM is fully loaded

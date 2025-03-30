@@ -40,13 +40,9 @@
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
-  max-width: 500px;
-  width: 100%;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
-  margin: 0 auto;
+  margin: 0;
+  padding: 0;
 }
 
 /* Header layout */
@@ -319,4 +315,102 @@ body:has(.timer-container:not(.hidden)) .presets-container {
   width: 20px;
   height: 20px;
   color: var(--label-color);
+}
+
+/* Input number component */
+.input-number-wrapper {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background-color: var(--input-bg);
+  overflow: hidden;
+}
+
+.input-number-container {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: stretch;
+  height: 100%;
+}
+
+.input-field {
+  flex-grow: 1;
+  padding: 0;
+  height: 100%;
+}
+
+.input-number {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  text-align: left;
+  appearance: none;
+  -moz-appearance: textfield;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  height: 100%;
+}
+
+.input-number::-webkit-outer-spin-button,
+.input-number::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-number:focus {
+  outline: none;
+}
+
+.input-buttons {
+  display: flex;
+  flex-direction: row;
+  border-left: 1px solid var(--border-color);
+  height: 100%;
+}
+
+.input-number-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 100%;
+  border: none;
+  cursor: pointer;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  user-select: none;
+  padding: 0;
+}
+
+.input-number-button:hover {
+  background-color: var(--border-color);
+}
+
+.input-number-button:active {
+  opacity: 0.7;
+}
+
+.input-number-button.increment {
+  border-right: none;
+}
+
+.input-number-button.decrement {
+  border-right: 1px solid var(--border-color);
+}
+
+.input-number-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Dark mode styles */
+.dark .input-number-button {
+  background-color: var(--input-bg);
+}
+
+.dark .input-number-button:hover {
+  background-color: #444;
 }

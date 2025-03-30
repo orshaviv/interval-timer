@@ -1,11 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full w-full">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Interval Timer</title>
     <link rel="stylesheet" href="css/styles.css" />
+    <!-- Add Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
+      // Configure Tailwind dark mode
+      tailwind.config = {
+        darkMode: "class",
+      };
+
       // On page load or when changing themes, best to add inline in `head` to avoid FOUC
       if (
         localStorage.getItem("color-theme") === "dark" ||
@@ -18,81 +25,298 @@
       }
     </script>
   </head>
-  <body>
-    <div class="header-container">
-      <h1>Interval Timer</h1>
+  <body
+    class="h-full w-full flex flex-col items-center justify-start dark:bg-gray-900"
+  >
+    <div
+      class="max-w-md w-full px-4 pb-1 pt-4 flex items-center justify-center"
+    >
+      <div class="flex items-center">
+        <h1 class="text-3xl md:text-4xl font-bold dark:text-blue-300">
+          Interval Timer
+        </h1>
+        <button
+          id="theme-toggle"
+          type="button"
+          class="ml-3 p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+        >
+          <svg
+            id="theme-toggle-dark-icon"
+            class="hidden w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            ></path>
+          </svg>
+          <svg
+            id="theme-toggle-light-icon"
+            class="hidden w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </div>
 
-      <!-- Dark mode toggle button -->
-      <button id="theme-toggle" type="button" class="theme-toggle">
-        <svg
-          id="theme-toggle-dark-icon"
-          class="hidden"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg"
+    <div
+      class="input-container max-w-md w-full mx-auto px-4 py-4 bg-white dark:bg-neutral-800 rounded-lg shadow-md mb-3"
+      id="setup-screen"
+    >
+      <div class="input-row flex gap-4">
+        <div class="input-group flex-1">
+          <label
+            for="sets"
+            class="block mb-1 font-bold text-gray-700 dark:text-gray-300"
+            >Number of Sets:</label
+          >
+          <!-- Input Number with Tailwind -->
+          <div
+            class="bg-white border border-gray-200 rounded-lg dark:bg-neutral-700 dark:border-neutral-700"
+            data-hs-input-number=""
+          >
+            <div class="w-full flex justify-between items-center gap-x-1">
+              <div class="grow py-2 px-3">
+                <input
+                  class="w-full p-0 bg-transparent border-0 text-gray-800 focus:ring-0 focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none dark:text-white"
+                  style="-moz-appearance: textfield"
+                  type="number"
+                  id="sets"
+                  min="0"
+                  value="1"
+                  data-hs-input-number-input=""
+                />
+              </div>
+              <div
+                class="flex items-center -gap-y-px divide-x divide-gray-200 border-s border-gray-200 dark:divide-neutral-700 dark:border-neutral-700"
+              >
+                <button
+                  type="button"
+                  class="size-10 inline-flex justify-center items-center gap-x-2 text-sm font-medium bg-white text-gray-800 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
+                  aria-label="Decrease"
+                  data-hs-input-number-decrement=""
+                >
+                  <svg
+                    class="shrink-0 size-3.5"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 12h14"></path>
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  class="size-10 inline-flex justify-center items-center gap-x-2 text-sm font-medium last:rounded-e-lg bg-white text-gray-800 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
+                  aria-label="Increase"
+                  data-hs-input-number-increment=""
+                >
+                  <svg
+                    class="shrink-0 size-3.5"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 12h14"></path>
+                    <path d="M12 5v14"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- End Input Number -->
+        </div>
+
+        <div class="input-group flex-1">
+          <label
+            for="set-rest-time"
+            class="block mb-1 font-bold text-gray-700 dark:text-gray-300"
+            >Time Between Sets:</label
+          >
+          <input
+            type="time"
+            id="set-rest-time"
+            value="00:00"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg dark:bg-neutral-700 dark:border-neutral-600 dark:text-white"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="input-group mb-4">
+        <label
+          for="intervals"
+          class="block mb-1 font-bold text-gray-700 dark:text-gray-300"
+          >Number of Intervals:</label
         >
-          <path
-            d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
-          ></path>
-        </svg>
-        <svg
-          id="theme-toggle-light-icon"
-          class="hidden"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg"
+        <!-- Input Number with Tailwind -->
+        <div
+          class="bg-white border border-gray-200 rounded-lg dark:bg-neutral-700 dark:border-neutral-700"
+          data-hs-input-number=""
         >
-          <path
-            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-          ></path>
-        </svg>
+          <div class="w-full flex justify-between items-center gap-x-1">
+            <div class="grow py-2 px-3">
+              <input
+                class="w-full p-0 bg-transparent border-0 text-gray-800 focus:ring-0 focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none dark:text-white"
+                style="-moz-appearance: textfield"
+                type="number"
+                id="intervals"
+                min="1"
+                value="4"
+                data-hs-input-number-input=""
+              />
+            </div>
+            <div
+              class="flex items-center -gap-y-px divide-x divide-gray-200 border-s border-gray-200 dark:divide-neutral-700 dark:border-neutral-700"
+            >
+              <button
+                type="button"
+                class="size-10 inline-flex justify-center items-center gap-x-2 text-sm font-medium bg-white text-gray-800 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
+                aria-label="Decrease"
+                data-hs-input-number-decrement=""
+              >
+                <svg
+                  class="shrink-0 size-3.5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14"></path>
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="size-10 inline-flex justify-center items-center gap-x-2 text-sm font-medium last:rounded-e-lg bg-white text-gray-800 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
+                aria-label="Increase"
+                data-hs-input-number-increment=""
+              >
+                <svg
+                  class="shrink-0 size-3.5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14"></path>
+                  <path d="M12 5v14"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- End Input Number -->
+      </div>
+
+      <div class="input-group mb-4">
+        <label
+          for="interval-time"
+          class="block mb-1 font-bold text-gray-700 dark:text-gray-300"
+          >Interval Duration:</label
+        >
+        <input
+          type="time"
+          id="interval-time"
+          value="00:15"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg dark:bg-neutral-700 dark:border-neutral-600 dark:text-white"
+          required
+        />
+      </div>
+
+      <div class="input-group mb-4">
+        <label
+          for="rest-time"
+          class="block mb-1 font-bold text-gray-700 dark:text-gray-300"
+          >Rest Duration:</label
+        >
+        <input
+          type="time"
+          id="rest-time"
+          value="00:05"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg dark:bg-neutral-700 dark:border-neutral-600 dark:text-white"
+          required
+        />
+      </div>
+
+      <button
+        class="start w-full py-4 mt-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition-colors"
+        id="start-button"
+      >
+        Start Timer
       </button>
     </div>
 
-    <div class="input-container" id="setup-screen">
-      <div class="input-row">
-        <div class="input-group">
-          <label for="sets">Number of Sets:</label>
-          <input type="number" id="sets" min="0" value="1" />
-        </div>
-
-        <div class="input-group">
-          <label for="set-rest-time">Time Between Sets:</label>
-          <input type="time" id="set-rest-time" value="00:00" required />
-        </div>
+    <div
+      class="timer-container max-w-md w-full mx-auto px-4 py-4 bg-white dark:bg-neutral-800 rounded-lg shadow-md hidden mb-3 text-center"
+      id="timer-screen"
+    >
+      <div
+        class="status text-xl font-bold text-gray-700 dark:text-gray-300 mb-2"
+        id="status"
+      >
+        Interval 1 of 4
+      </div>
+      <div
+        class="timer-display text-5xl font-bold text-gray-800 dark:text-blue-300 my-5"
+        id="timer"
+      >
+        15
+      </div>
+      <div
+        class="interval-info text-lg my-4 text-gray-700 dark:text-gray-300"
+        id="interval-type"
+      >
+        WORK
+      </div>
+      <div
+        class="set-info text-base mt-1 text-gray-600 dark:text-gray-400"
+        id="set-info"
+      >
+        Set 1 of 3
+      </div>
+      <div
+        class="total-time text-sm mt-2 text-gray-600 dark:text-gray-400 font-mono"
+        id="total-time"
+      >
+        00:00
       </div>
 
-      <div class="input-group">
-        <label for="intervals">Number of Intervals:</label>
-        <input type="number" id="intervals" min="1" value="4" />
-      </div>
-
-      <div class="input-group">
-        <label for="interval-time">Interval Duration:</label>
-        <input type="time" id="interval-time" value="00:15" required />
-      </div>
-
-      <div class="input-group">
-        <label for="rest-time">Rest Duration:</label>
-        <input type="time" id="rest-time" value="00:05" required />
-      </div>
-
-      <button class="start" id="start-button">Start Timer</button>
-    </div>
-
-    <div class="timer-container hidden" id="timer-screen">
-      <div class="status" id="status">Interval 1 of 4</div>
-      <div class="timer-display" id="timer">15</div>
-      <div class="interval-info" id="interval-type">WORK</div>
-      <div class="set-info" id="set-info">Set 1 of 3</div>
-      <div class="total-time" id="total-time">00:00</div>
-
-      <div class="speed-slider-container">
+      <div class="speed-slider-container mt-5 mb-3">
         <div class="speed-slider-label">
-          <label for="speed-slider">
-            Speed: <span id="speed-value" class="speed-value">1.0x</span>
+          <label for="speed-slider" class="text-gray-700 dark:text-gray-300">
+            Speed:
+            <span id="speed-value" class="speed-value">1.0x</span>
           </label>
         </div>
         <input
@@ -104,7 +328,9 @@
           step="25"
           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
         />
-        <div class="speed-marks">
+        <div
+          class="speed-marks flex justify-between text-xs text-gray-500 dark:text-gray-400 px-1 mt-1"
+        >
           <span>0.5x</span>
           <span>1.0x</span>
           <span>1.5x</span>
@@ -112,23 +338,73 @@
         </div>
       </div>
 
-      <div class="buttons-container">
-        <button class="play-pause" id="play-pause">Pause</button>
-        <button class="reset" id="reset">Reset</button>
-        <button class="back" id="back-button">Back</button>
+      <div class="buttons-container flex justify-center gap-4 mt-5">
+        <button
+          class="play-pause px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition-colors"
+          id="play-pause"
+        >
+          Pause
+        </button>
+        <button
+          class="reset px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-lg transition-colors"
+          id="reset"
+        >
+          Reset
+        </button>
+        <button
+          class="back px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg transition-colors"
+          id="back-button"
+        >
+          Back
+        </button>
       </div>
     </div>
 
     <!-- Presets Container -->
-    <div class="presets-container" id="presets-container">
-      <div class="preset-buttons" id="preset-buttons">
-        <button class="preset-btn" data-preset="1">1</button>
-        <button class="preset-btn" data-preset="2">2</button>
-        <button class="preset-btn" data-preset="3">3</button>
-        <button class="preset-btn" data-preset="4">4</button>
-        <button class="preset-btn" data-preset="5">5</button>
+    <div
+      class="presets-container max-w-md w-full mx-auto px-4 py-4 bg-white dark:bg-neutral-800 rounded-lg shadow-md mt-2"
+      id="presets-container"
+    >
+      <div class="flex items-center justify-between w-full">
+        <div class="preset-buttons flex flex-grow mr-3" id="preset-buttons">
+          <button
+            class="preset-btn flex-1 mx-1 h-10 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg flex items-center justify-center transition-colors"
+            data-preset="1"
+          >
+            1
+          </button>
+          <button
+            class="preset-btn flex-1 mx-1 h-10 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg flex items-center justify-center transition-colors"
+            data-preset="2"
+          >
+            2
+          </button>
+          <button
+            class="preset-btn flex-1 mx-1 h-10 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg flex items-center justify-center transition-colors"
+            data-preset="3"
+          >
+            3
+          </button>
+          <button
+            class="preset-btn flex-1 mx-1 h-10 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg flex items-center justify-center transition-colors"
+            data-preset="4"
+          >
+            4
+          </button>
+          <button
+            class="preset-btn flex-1 mx-1 h-10 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg flex items-center justify-center transition-colors"
+            data-preset="5"
+          >
+            5
+          </button>
+        </div>
+        <button
+          class="edit-btn h-10 px-4 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-lg whitespace-nowrap flex items-center justify-center transition-colors"
+          id="edit-btn"
+        >
+          Edit
+        </button>
       </div>
-      <button class="edit-btn" id="edit-btn">Edit</button>
     </div>
 
     <script type="module" src="js/main.js"></script>
